@@ -142,7 +142,7 @@
                 upazilaSelect.innerHTML = '<option value="all">সব উপজেলা</option>';
                 upazilaSelect.disabled = district === 'all';
 
-                if (district!== 'all' && BD_DATA[district]) {
+                if (district !== 'all' && BD_DATA[district]) {
                     Object.keys(BD_DATA[district].upazilas).forEach(upazila => {
                         upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
                     });
@@ -153,7 +153,6 @@
                 filterReports();
             }
 
-            // জেলা + উপজেলা দুইটা দিয়েই ফিল্টার হবে
             window.filterReports = function() {
                 const district = districtSelect.value;
                 const upazila = upazilaSelect.value;
@@ -161,8 +160,7 @@
 
                 let filtered = allReports;
 
-                // জেলা ফিল্টার - Gazipur District, Gazipur Sadar, Gazipur সব মিলবে
-                if (district!== 'all') {
+                if (district !== 'all') {
                     filtered = filtered.filter(r => {
                         if (!r.district) return false;
                         const dbDistrict = r.district.toLowerCase().replace(' district','').replace(' sadar','').replace(' জেলা','').trim();
@@ -171,35 +169,32 @@
                     });
                 }
 
-                // উপজেলা ফিল্টার - যদি DB তে upazila কলাম থাকে
-                if (upazila!== 'all') {
+                if (upazila !== 'all') {
                     filtered = filtered.filter(r => {
-                        if (!r.upazila) return true; // পুরান ডাটায় upazila নাই, দেখাও
+                        if (!r.upazila) return true;
                         return r.upazila.toLowerCase().trim() === upazila.toLowerCase().trim();
                     });
 
-                    // উপজেলায় জুম করো
-                    if (district!== 'all' && BD_DATA[district]?.upazilas[upazila]) {
+                    if (district !== 'all' && BD_DATA[district]?.upazilas[upazila]) {
                         const coords = BD_DATA[district].upazilas[upazila];
                         map.setView(coords, 14);
                     }
                 }
 
                 filtered.forEach(report => {
-                    if (!report.lat ||!report.lng) return;
-                    const color = report.status === 'off'? '#ef4444' : '#22c55e';
+                    if (!report.lat || !report.lng) return;
+                    const color = report.status === 'off' ? '#ef4444' : '#22c55e';
                     L.circleMarker([report.lat, report.lng], {
                         radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8
-                    }).bindPopup(`<b>${report.district || 'Unknown'}</b><br>${report.upazila || ''}<br>${report.status === 'off'? 'কারেন্ট নাই' : 'কারেন্ট আছে'}<br><small>${new Date(report.created_at).toLocaleTimeString('bn-BD')}</small>`).addTo(markers);
+                    }).bindPopup(`<b>${report.district || 'Unknown'}</b><br>${report.upazila || ''}<br>${report.status === 'off' ? 'কারেন্ট নাই' : 'কারেন্ট আছে'}<br><small>${new Date(report.created_at).toLocaleTimeString('bn-BD')}</small>`).addTo(markers);
                 });
 
-                let locationText = district === 'all'? 'সব জেলায়' : district;
-                if (upazila!== 'all') locationText = upazila + ', ' + district;
+                let locationText = district === 'all' ? 'সব জেলায়' : district;
+                if (upazila !== 'all') locationText = upazila + ', ' + district;
 
                 statusDiv.innerText = `${locationText} - লাস্ট ১ ঘন্টায় ${filtered.length} টা রিপোর্ট`;
             }
 
-            // জেলা + উপজেলা দুইটাই বের করো
             async function getLocationFromCoords(lat, lng) {
                 try {
                     statusDiv.innerText = 'লোকেশন খুঁজতেছি...';
@@ -249,125 +244,6 @@
                 if(error) { statusDiv.innerText = 'DB Read এরর: ' + error.message; return; }
                 allReports = data;
                 filterReports();
-            }
-
-            setInterval(loadReports, 30000);
-        });
-    </script>
-</body>
-</html>                map = L.map('map', {
-                    center: [23.685, 90.3563], zoom: 7, minZoom: 6, maxZoom: 18,
-                    maxBounds: bdBounds, maxBoundsViscosity: 1.0
-                });
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                markers = L.layerGroup().addTo(map);
-
-                Object.keys(BD_DATA).sort().forEach(d => {
-                    districtSelect.innerHTML += `<option value="${d}">${d}</option>`;
-                });
-
-                statusDiv.innerText = 'ম্যাপ রেডি ✅ ৬৪ জেলা লোডেড';
-                loadReports();
-            } catch (e) { statusDiv.innerText = 'ম্যাপ এরর: ' + e.message; return; }
-
-            window.loadUpazilas = function() {
-                const district = districtSelect.value;
-                upazilaSelect.innerHTML = '<option value="all">সব উপজেলা</option>';
-                upazilaSelect.disabled = district === 'all';
-
-                if (district!== 'all' && BD_DATA[district]) {
-                    Object.keys(BD_DATA[district].upazilas).forEach(upazila => {
-                        upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
-                    });
-                    map.setView(BD_DATA[district].center, 10);
-                } else {
-                    map.setView([23.685, 90.3563], 7);
-                }
-                filterReports();
-            }
-
-            window.filterUpazila = function() {
-                const district = districtSelect.value;
-                const upazila = upazilaSelect.value;
-
-                if (district!== 'all' && upazila!== 'all' && BD_DATA[district]?.upazilas[upazila]) {
-                    const coords = BD_DATA[district].upazilas[upazila];
-                    map.setView(coords, 14);
-                }
-                filterReports();
-            }
-
-            async function getDistrictFromCoords(lat, lng) {
-                try {
-                    statusDiv.innerText = 'জেলা খুঁজতেছি...';
-                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=bn`);
-                    const data = await response.json();
-                    let district = data.address.county || data.address.state_district || data.address.city || 'Unknown';
-                    district = district.replace(' District','').replace(' জেলা','').replace(' Sadar','').trim();
-                    return district;
-                } catch (e) { return 'Unknown'; }
-            }
-
-            window.reportLoadShedding = async function(status) {
-                statusDiv.innerText = 'লোকেশন খুঁজতেছি...';
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-
-                    if(!bdBounds.contains([lat, lng])) {
-                        statusDiv.innerText = 'দুঃখিত, শুধু বাংলাদেশের জন্য';
-                        return;
-                    }
-
-                    const district = await getDistrictFromCoords(lat, lng);
-                    statusDiv.innerText = `${district} জেলা পাইছি! DB তে পাঠাচ্ছি...`;
-
-                    const { error } = await supabase.from('reports').insert([{
-                        status: status, lat: lat, lng: lng, district: district
-                    }]);
-                    if(error) statusDiv.innerText = 'DB এরর: ' + error.message;
-                    else { statusDiv.innerText = `${district} থেকে রিপোর্ট যোগ হয়েছে ✅`; loadReports(); }
-                }, (err) => {
-                    if(err.code == 1) statusDiv.innerText = 'লোকেশন ব্লক করা। 🔒 Allow দিন';
-                    else if(err.code == 2) statusDiv.innerText = 'GPS পাচ্ছে না';
-                    else statusDiv.innerText = 'লোকেশন এরর: ' + err.message;
-                }, {enableHighAccuracy: true, timeout: 15000});
-            }
-
-            async function loadReports() {
-                const { data, error } = await supabase.from('reports').select('*').gte('created_at', new Date(Date.now() - 60*60*1000).toISOString());
-                if(error) { statusDiv.innerText = 'DB Read এরর: ' + error.message; return; }
-                allReports = data;
-                filterReports();
-            }
-
-            function filterReports() {
-                const district = districtSelect.value;
-                markers.clearLayers();
-
-                let filtered = allReports;
-
-                if (district!== 'all') {
-                    filtered = filtered.filter(r => {
-                        if (!r.district) return false;
-                        const dbDistrict = r.district.toLowerCase().replace(' district','').replace(' sadar','').trim();
-                        const selectedDistrict = district.toLowerCase().trim();
-                        return dbDistrict.includes(selectedDistrict) || selectedDistrict.includes(dbDistrict);
-                    });
-                }
-
-                filtered.forEach(report => {
-                    if (!report.lat ||!report.lng) return;
-                    const color = report.status === 'off'? '#ef4444' : '#22c55e';
-                    L.circleMarker([report.lat, report.lng], {
-                        radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8
-                    }).bindPopup(`<b>${report.district || 'Unknown'}</b><br>${report.status === 'off'? 'কারেন্ট নাই' : 'কারেন্ট আছে'}<br><small>${new Date(report.created_at).toLocaleTimeString('bn-BD')}</small>`).addTo(markers);
-                });
-
-                let locationText = district === 'all'? 'সব জেলায়' : district;
-                if (upazilaSelect.value!== 'all') locationText = upazilaSelect.value + ', ' + district;
-
-                statusDiv.innerText = `${locationText} - লাস্ট ১ ঘন্টায় ${filtered.length} টা রিপোর্ট`;
             }
 
             setInterval(loadReports, 30000);
