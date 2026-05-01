@@ -9,15 +9,15 @@
         html, body {margin: 0; padding: 0; height: 100%;}
         body {font-family: 'Hind Siliguri', sans-serif; background: #0f172a; display: flex; flex-direction: column;}
         #map {height: 50vh; width: 100%; background: #333; flex-shrink: 0;}
-      .controls {padding: 12px; background: #1e293b; text-align: center; flex-grow: 1; overflow-y: auto;}
+     .controls {padding: 12px; background: #1e293b; text-align: center; flex-grow: 1; overflow-y: auto;}
         h1 {color: #fff; font-size: 17px; margin-bottom: 6px;}
-      .btn {padding: 12px 8px; font-size: 15px; border-radius: 8px; border: none; margin: 4px; width: 47%; font-weight: bold; cursor: pointer;}
-      .off {background: #ef4444; color: white;}
-      .on {background: #22c55e; color: white;}
+     .btn {padding: 12px 8px; font-size: 15px; border-radius: 8px; border: none; margin: 4px; width: 47%; font-weight: bold; cursor: pointer;}
+     .off {background: #ef4444; color: white;}
+     .on {background: #22c55e; color: white;}
         #status {color: #fbbf24; margin-top: 6px; font-size: 12px; min-height: 16px;}
         select {width: 96%; padding: 9px; margin: 4px 0; border-radius: 8px; border: none; font-size: 14px; background: #334155; color: white;}
-      .filter-group {display: flex; gap: 4px; width: 96%; margin: 0 auto;}
-      .filter-group select {width: 50%;}
+     .filter-group {display: flex; gap: 4px; width: 96%; margin: 0 auto;}
+     .filter-group select {width: 50%;}
     </style>
 </head>
 <body>
@@ -49,7 +49,6 @@
             const upazilaSelect = document.getElementById('upazilaSelect');
             let supabase, map, markers, allReports = [];
 
-            // ৬৪ জেলার উপজেলা + GPS কোঅর্ডিনেট
             const BD_DATA = {
                 "Bagerhat": { upazilas: {"Bagerhat Sadar": [22.6584, 89.7850], "Mongla": [22.4742, 89.6042], "Rampal": [22.6176, 89.6803]}, center: [22.6584, 89.7850] },
                 "Bandarban": { upazilas: {"Bandarban Sadar": [22.1953, 92.2183], "Thanchi": [21.7869, 92.4244]}, center: [22.1953, 92.2183] },
@@ -130,7 +129,6 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                 markers = L.layerGroup().addTo(map);
 
-                // ৬৪ জেলা লোড
                 Object.keys(BD_DATA).sort().forEach(d => {
                     districtSelect.innerHTML += `<option value="${d}">${d}</option>`;
                 });
@@ -172,7 +170,7 @@
                     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=bn`);
                     const data = await response.json();
                     let district = data.address.county || data.address.state_district || data.address.city || 'Unknown';
-                    district = district.replace(' District', '').replace(' জেলা', '');
+                    district = district.replace(' District', '').replace(' জেলা', '').trim();
                     return district;
                 } catch (e) { return 'Unknown'; }
             }
@@ -215,15 +213,22 @@
                 markers.clearLayers();
 
                 let filtered = allReports;
+
+                // ফিক্স: Case insensitive ম্যাচিং + null চেক
                 if (district!== 'all') {
-                    filtered = filtered.filter(r => r.district && r.district.toLowerCase().includes(district.toLowerCase()));
+                    filtered = filtered.filter(r => {
+                        if (!r.district) return false;
+                        // DB এর Gazipur আর dropdown এর Gazipur মিলবে
+                        return r.district.toLowerCase().trim() === district.toLowerCase().trim();
+                    });
                 }
 
                 filtered.forEach(report => {
+                    if (!report.lat ||!report.lng) return;
                     const color = report.status === 'off'? '#ef4444' : '#22c55e';
                     L.circleMarker([report.lat, report.lng], {
                         radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8
-                    }).bindPopup(`<b>${report.district || 'Unknown'}</b><br>${report.status === 'off'? 'কারেন্ট নাই' : 'কারেন্ট আছে'}`).addTo(markers);
+                    }).bindPopup(`<b>${report.district || 'Unknown'}</b><br>${report.status === 'off'? 'কারেন্ট নাই' : 'কারেন্ট আছে'}<br><small>${new Date(report.created_at).toLocaleTimeString('bn-BD')}</small>`).addTo(markers);
                 });
 
                 let locationText = district === 'all'? 'সব জেলায়' : district;
