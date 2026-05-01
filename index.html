@@ -3,93 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বাংলাদেশ লোডশেডিং ম্যাপ</title>
+    <title>বাংলাদেশ লোডশেডিং ম্যাপ - ৬৪ জেলা</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         html, body {margin: 0; padding: 0; height: 100%;}
         body {font-family: 'Hind Siliguri', sans-serif; background: #0f172a; display: flex; flex-direction: column;}
-        #map {height: 55vh; width: 100%; background: #333; flex-shrink: 0;}
-        .controls {padding: 15px; background: #1e293b; text-align: center; flex-grow: 1;}
-        h1 {color: #fff; font-size: 18px; margin-bottom: 8px;}
-        .btn {padding: 12px 8px; font-size: 15px; border-radius: 8px; border: none; margin: 4px; width: 47%; font-weight: bold; cursor: pointer;}
-        .off {background: #ef4444; color: white;}
-        .on {background: #22c55e; color: white;}
-        #status {color: #fbbf24; margin-top: 8px; font-size: 13px; min-height: 18px;}
-        select {width: 96%; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; font-size: 15px; background: #334155; color: white;}
+        #map {height: 50vh; width: 100%; background: #333; flex-shrink: 0;}
+      .controls {padding: 12px; background: #1e293b; text-align: center; flex-grow: 1; overflow-y: auto;}
+        h1 {color: #fff; font-size: 17px; margin-bottom: 6px;}
+      .btn {padding: 12px 8px; font-size: 15px; border-radius: 8px; border: none; margin: 4px; width: 47%; font-weight: bold; cursor: pointer;}
+      .off {background: #ef4444; color: white;}
+      .on {background: #22c55e; color: white;}
+        #status {color: #fbbf24; margin-top: 6px; font-size: 12px; min-height: 16px;}
+        select {width: 96%; padding: 9px; margin: 4px 0; border-radius: 8px; border: none; font-size: 14px; background: #334155; color: white;}
+      .filter-group {display: flex; gap: 4px; width: 96%; margin: 0 auto;}
+      .filter-group select {width: 50%;}
     </style>
 </head>
 <body>
     <div id="map"></div>
     <div class="controls">
-        <h1>⚡ বাংলাদেশ লোডশেডিং ম্যাপ</h1>
-        <select id="districtSelect" onchange="filterDistrict()">
-            <option value="all">সব জেলা</option>
-            <option value="Dhaka">ঢাকা</option>
-            <option value="Chattogram">চট্টগ্রাম</option>
-            <option value="Gazipur">গাজীপুর</option>
-            <option value="Narayanganj">নারায়ণগঞ্জ</option>
-            <option value="Cumilla">কুমিল্লা</option>
-            <option value="Sylhet">সিলেট</option>
-            <option value="Khulna">খুলনা</option>
-            <option value="Rajshahi">রাজশাহী</option>
-            <option value="Rangpur">রংপুর</option>
-            <option value="Barisal">বরিশাল</option>
-            <option value="Mymensingh">ময়মনসিংহ</option>
-            <option value="Manikganj">মানিকগঞ্জ</option>
-            <option value="Faridpur">ফরিদপুর</option>
-            <option value="Tangail">টাঙ্গাইল</option>
-            <option value="Kishoreganj">কিশোরগঞ্জ</option>
-            <option value="Bogra">বগুড়া</option>
-            <option value="Pabna">পাবনা</option>
-            <option value="Jessore">যশোর</option>
-            <option value="Comilla">কুমিল্লা</option>
-            <option value="Noakhali">নোয়াখালী</option>
-            <option value="Cox's Bazar">কক্সবাজার</option>
-            <!-- বাকি ৬৪ জেলা অ্যাড করে দিলাম -->
-            <option value="Bagerhat">বাগেরহাট</option>
-            <option value="Bandarban">বান্দরবান</option>
-            <option value="Barguna">বরগুনা</option>
-            <option value="Bhola">ভোলা</option>
-            <option value="Brahmanbaria">ব্রাহ্মণবাড়িয়া</option>
-            <option value="Chandpur">চাঁদপুর</option>
-            <option value="Chuadanga">চুয়াডাঙ্গা</option>
-            <option value="Dinajpur">দিনাজপুর</option>
-            <option value="Feni">ফেনী</option>
-            <option value="Gaibandha">গাইবান্ধা</option>
-            <option value="Gopalganj">গোপালগঞ্জ</option>
-            <option value="Habiganj">হবিগঞ্জ</option>
-            <option value="Jamalpur">জামালপুর</option>
-            <option value="Jhalokati">ঝালকাঠি</option>
-            <option value="Jhenaidah">ঝিনাইদহ</option>
-            <option value="Joypurhat">জয়পুরহাট</option>
-            <option value="Khagrachhari">খাগড়াছড়ি</option>
-            <option value="Kurigram">কুড়িগ্রাম</option>
-            <option value="Kushtia">কুষ্টিয়া</option>
-            <option value="Lakshmipur">লক্ষ্মীপুর</option>
-            <option value="Lalmonirhat">লালমনিরহাট</option>
-            <option value="Madaripur">মাদারীপুর</option>
-            <option value="Magura">মাগুরা</option>
-            <option value="Meherpur">মেহেরপুর</option>
-            <option value="Moulvibazar">মৌলভীবাজার</option>
-            <option value="Munshiganj">মুন্সিগঞ্জ</option>
-            <option value="Naogaon">নওগাঁ</option>
-            <option value="Narail">নড়াইল</option>
-            <option value="Narsingdi">নরসিংদী</option>
-            <option value="Natore">নাটোর</option>
-            <option value="Netrokona">নেত্রকোণা</option>
-            <option value="Nilphamari">নীলফামারী</option>
-            <option value="Panchagarh">পঞ্চগড়</option>
-            <option value="Patuakhali">পটুয়াখালী</option>
-            <option value="Pirojpur">পিরোজপুর</option>
-            <option value="Rajbari">রাজবাড়ী</option>
-            <option value="Rangamati">রাঙ্গামাটি</option>
-            <option value="Satkhira">সাতক্ষীরা</option>
-            <option value="Shariatpur">শরীয়তপুর</option>
-            <option value="Sherpur">শেরপুর</option>
-            <option value="Sirajganj">সিরাজগঞ্জ</option>
-            <option value="Sunamganj">সুনামগঞ্জ</option>
-            <option value="Thakurgaon">ঠাকুরগাঁও</option>
-        </select>
+        <h1>⚡ বাংলাদেশ লোডশেডিং ম্যাপ - ৬৪ জেলা</h1>
+        <div class="filter-group">
+            <select id="districtSelect" onchange="loadUpazilas()">
+                <option value="all">সব জেলা</option>
+            </select>
+            <select id="upazilaSelect" onchange="filterUpazila()" disabled>
+                <option value="all">সব উপজেলা</option>
+            </select>
+        </div>
         <button class="btn off" onclick="reportLoadShedding('off')">কারেন্ট নাই</button>
         <button class="btn on" onclick="reportLoadShedding('on')">কারেন্ট আসছে</button>
         <div id="status">স্ক্রিপ্ট লোড হচ্ছে...</div>
@@ -99,21 +41,86 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const SUPABASE_URL = 'https://irwvbnlorfxuzhomcyew.supabase.co'; 
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlyd3ZibmxvcmZ4dXpob21jeWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDAyMDMsImV4cCI6MjA5MzE3NjIwM30.4MvaM2e_KgdSu_WfQ_lwSxkBkYiXZv7c1B0NWkbEup8'; 
-            
+            const SUPABASE_URL = 'https://irwvbnlorfxuzhomcyew.supabase.co';
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlyd3ZibmxvcmZ4dXpob21jeWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDAyMDMsImV4cCI6MjA5MzE3NjIwM30.4MvaM2e_KgdSu_WfQ_lwSxkBkYiXZv7c1B0NWkbEup8';
+
             const statusDiv = document.getElementById('status');
             const districtSelect = document.getElementById('districtSelect');
+            const upazilaSelect = document.getElementById('upazilaSelect');
             let supabase, map, markers, allReports = [];
+
+            // ৬৪ জেলার উপজেলা + GPS কোঅর্ডিনেট
+            const BD_DATA = {
+                "Bagerhat": { upazilas: {"Bagerhat Sadar": [22.6584, 89.7850], "Mongla": [22.4742, 89.6042], "Rampal": [22.6176, 89.6803]}, center: [22.6584, 89.7850] },
+                "Bandarban": { upazilas: {"Bandarban Sadar": [22.1953, 92.2183], "Thanchi": [21.7869, 92.4244]}, center: [22.1953, 92.2183] },
+                "Barguna": { upazilas: {"Barguna Sadar": [22.0953, 90.1121], "Amtali": [22.1308, 90.2289]}, center: [22.0953, 90.1121] },
+                "Barisal": { upazilas: {"Barisal Sadar": [22.7010, 90.3535], "Bakerganj": [22.5567, 90.3389], "Babuganj": [22.8244, 90.3375]}, center: [22.7010, 90.3535] },
+                "Bhola": { upazilas: {"Bhola Sadar": [22.6859, 90.6482], "Borhanuddin": [22.4947, 90.7167]}, center: [22.6859, 90.6482] },
+                "Bogra": { upazilas: {"Bogra Sadar": [24.8465, 89.3772], "Sherpur": [24.6706, 89.4264], "Dhupchanchia": [24.9381, 89.2250]}, center: [24.8465, 89.3772] },
+                "Brahmanbaria": { upazilas: {"Brahmanbaria Sadar": [23.9571, 91.1119], "Ashuganj": [24.0514, 90.9981]}, center: [23.9571, 91.1119] },
+                "Chandpur": { upazilas: {"Chandpur Sadar": [23.2333, 90.6667], "Hajiganj": [23.2486, 90.8575]}, center: [23.2333, 90.6667] },
+                "Chattogram": { upazilas: {"Kotwali": [22.3569, 91.7832], "Pahartali": [22.3678, 91.8003], "Sitakunda": [22.6239, 91.6636], "Mirsharai": [22.7619, 91.5717], "Hathazari": [22.5108, 91.8042]}, center: [22.3569, 91.7832] },
+                "Chuadanga": { upazilas: {"Chuadanga Sadar": [23.6402, 88.8410], "Alamdanga": [23.7617, 88.9503]}, center: [23.6402, 88.8410] },
+                "Cumilla": { upazilas: {"Cumilla Sadar": [23.4682, 91.1809], "Daudkandi": [23.5375, 90.7286], "Chandina": [23.4864, 91.0069], "Laksam": [23.2444, 91.1297]}, center: [23.4682, 91.1809] },
+                "Cox's Bazar": { upazilas: {"Cox's Bazar Sadar": [21.4272, 92.0058], "Teknaf": [20.8664, 92.2989], "Chakaria": [21.7719, 92.0556]}, center: [21.4272, 92.0058] },
+                "Dhaka": { upazilas: {"Dhanmondi": [23.7465, 90.3754], "Mirpur": [23.8223, 90.3654], "Uttara": [23.8759, 90.3795], "Savar": [23.8583, 90.2667], "Keraniganj": [23.6862, 90.3461], "Gulshan": [23.7925, 90.4078]}, center: [23.8103, 90.4125] },
+                "Dinajpur": { upazilas: {"Dinajpur Sadar": [25.6279, 88.6332], "Birganj": [25.8558, 88.6169]}, center: [25.6279, 88.6332] },
+                "Faridpur": { upazilas: {"Faridpur Sadar": [23.6072, 89.8425], "Bhanga": [23.3869, 89.9850]}, center: [23.6072, 89.8425] },
+                "Feni": { upazilas: {"Feni Sadar": [23.0159, 91.3976], "Sonagazi": [22.8508, 91.3947]}, center: [23.0159, 91.3976] },
+                "Gaibandha": { upazilas: {"Gaibandha Sadar": [25.3288, 89.5281], "Gobindaganj": [25.1281, 89.3906]}, center: [25.3288, 89.5281] },
+                "Gazipur": { upazilas: {"Gazipur Sadar": [24.0022, 90.4266], "Kaliakair": [24.0756, 90.2177], "Tongi": [23.8943, 90.3993], "Sreepur": [24.2007, 90.4777], "Kapasia": [24.1028, 90.5697]}, center: [24.0022, 90.4266] },
+                "Gopalganj": { upazilas: {"Gopalganj Sadar": [23.0050, 89.8266], "Tungipara": [22.9008, 89.8856]}, center: [23.0050, 89.8266] },
+                "Habiganj": { upazilas: {"Habiganj Sadar": [24.3745, 91.4155], "Madhabpur": [24.1008, 91.2889]}, center: [24.3745, 91.4155] },
+                "Jamalpur": { upazilas: {"Jamalpur Sadar": [24.9375, 89.9371], "Islampur": [25.0878, 89.7958]}, center: [24.9375, 89.9371] },
+                "Jashore": { upazilas: {"Jashore Sadar": [23.1691, 89.2042], "Jhikargachha": [23.0989, 89.1008]}, center: [23.1691, 89.2042] },
+                "Jhalokati": { upazilas: {"Jhalokati Sadar": [22.6417, 90.1989], "Nalchity": [22.6378, 90.2781]}, center: [22.6417, 90.1989] },
+                "Jhenaidah": { upazilas: {"Jhenaidah Sadar": [23.5448, 89.1729], "Kaliganj": [23.4131, 89.1331]}, center: [23.5448, 89.1729] },
+                "Joypurhat": { upazilas: {"Joypurhat Sadar": [25.0968, 89.0227], "Panchbibi": [25.1858, 89.0331]}, center: [25.0968, 89.0227] },
+                "Khagrachhari": { upazilas: {"Khagrachhari Sadar": [23.1193, 91.9847], "Matiranga": [23.0431, 91.8739]}, center: [23.1193, 91.9847] },
+                "Khulna": { upazilas: {"Khulna Sadar": [22.8456, 89.5403], "Dumuria": [22.8144, 89.4117], "Rupsha": [22.8211, 89.5733], "Batiaghata": [22.7369, 89.5128]}, center: [22.8456, 89.5403] },
+                "Kishoreganj": { upazilas: {"Kishoreganj Sadar": [24.4449, 90.7766], "Bajitpur": [24.2164, 90.9528]}, center: [24.4449, 90.7766] },
+                "Kurigram": { upazilas: {"Kurigram Sadar": [25.8054, 89.6362], "Nageshwari": [25.9772, 89.7011]}, center: [25.8054, 89.6362] },
+                "Kushtia": { upazilas: {"Kushtia Sadar": [23.9013, 89.1220], "Kumarkhali": [23.8547, 89.2472]}, center: [23.9013, 89.1220] },
+                "Lakshmipur": { upazilas: {"Lakshmipur Sadar": [22.9447, 90.8281], "Ramganj": [23.1036, 90.8739]}, center: [22.9447, 90.8281] },
+                "Lalmonirhat": { upazilas: {"Lalmonirhat Sadar": [25.9923, 89.2847], "Patgram": [26.3611, 89.0306]}, center: [25.9923, 89.2847] },
+                "Madaripur": { upazilas: {"Madaripur Sadar": [23.1643, 90.1897], "Shibchar": [23.3536, 90.1694]}, center: [23.1643, 90.1897] },
+                "Magura": { upazilas: {"Magura Sadar": [23.4854, 89.4194], "Mohammadpur": [23.4178, 89.5867]}, center: [23.4854, 89.4194] },
+                "Manikganj": { upazilas: {"Manikganj Sadar": [23.8644, 90.0047], "Saturia": [23.9872, 90.0275], "Singair": [23.8003, 90.1511]}, center: [23.8644, 90.0047] },
+                "Meherpur": { upazilas: {"Meherpur Sadar": [23.7623, 88.6318], "Gangni": [23.8228, 88.6806]}, center: [23.7623, 88.6318] },
+                "Moulvibazar": { upazilas: {"Moulvibazar Sadar": [24.4829, 91.7774], "Sreemangal": [24.3065, 91.7296]}, center: [24.4829, 91.7774] },
+                "Munshiganj": { upazilas: {"Munshiganj Sadar": [23.5422, 90.5305], "Sreenagar": [23.5350, 90.2931]}, center: [23.5422, 90.5305] },
+                "Mymensingh": { upazilas: {"Mymensingh Sadar": [24.7471, 90.4203], "Trishal": [24.5809, 90.3919], "Muktagachha": [24.7589, 90.2650]}, center: [24.7471, 90.4203] },
+                "Naogaon": { upazilas: {"Naogaon Sadar": [24.9136, 88.7531], "Manda": [24.7106, 88.6678]}, center: [24.9136, 88.7531] },
+                "Narail": { upazilas: {"Narail Sadar": [23.1721, 89.5125], "Lohagara": [23.1925, 89.6514]}, center: [23.1721, 89.5125] },
+                "Narayanganj": { upazilas: {"Narayanganj Sadar": [23.6238, 90.4990], "Sonargaon": [23.6646, 90.6057], "Rupganj": [23.7937, 90.5227], "Araihazar": [23.7847, 90.6461]}, center: [23.6238, 90.4990] },
+                "Narsingdi": { upazilas: {"Narsingdi Sadar": [23.9322, 90.7156], "Palash": [23.9519, 90.6272]}, center: [23.9322, 90.7156] },
+                "Natore": { upazilas: {"Natore Sadar": [24.4102, 89.0076], "Baraigram": [24.3031, 89.1675]}, center: [24.4102, 89.0076] },
+                "Netrokona": { upazilas: {"Netrokona Sadar": [24.8817, 90.7272], "Purbadhala": [24.9628, 90.6025]}, center: [24.8817, 90.7272] },
+                "Nilphamari": { upazilas: {"Nilphamari Sadar": [25.9318, 88.8569], "Saidpur": [25.7781, 88.8925]}, center: [25.9318, 88.8569] },
+                "Noakhali": { upazilas: {"Noakhali Sadar": [22.8724, 91.0973], "Begumganj": [22.9553, 91.1064]}, center: [22.8724, 91.0973] },
+                "Pabna": { upazilas: {"Pabna Sadar": [24.0064, 89.2372], "Ishwardi": [24.1317, 89.0644]}, center: [24.0064, 89.2372] },
+                "Panchagarh": { upazilas: {"Panchagarh Sadar": [26.3411, 88.5542], "Tetulia": [26.4903, 88.4739]}, center: [26.3411, 88.5542] },
+                "Patuakhali": { upazilas: {"Patuakhali Sadar": [22.3596, 90.3297], "Kuakata": [21.8211, 90.1200]}, center: [22.3596, 90.3297] },
+                "Pirojpur": { upazilas: {"Pirojpur Sadar": [22.5841, 89.9720], "Mathbaria": [22.2872, 89.9669]}, center: [22.5841, 89.9720] },
+                "Rajbari": { upazilas: {"Rajbari Sadar": [23.7574, 89.6440], "Pangsha": [23.7839, 89.4069]}, center: [23.7574, 89.6440] },
+                "Rajshahi": { upazilas: {"Rajshahi Sadar": [24.3745, 88.6042], "Paba": [24.4322, 88.5858], "Godagari": [24.4694, 88.3358]}, center: [24.3745, 88.6042] },
+                "Rangamati": { upazilas: {"Rangamati Sadar": [22.7324, 92.1729], "Kaptai": [22.5000, 92.2167]}, center: [22.7324, 92.1729] },
+                "Rangpur": { upazilas: {"Rangpur Sadar": [25.7439, 89.2752], "Mithapukur": [25.5736, 89.2847], "Pirganj": [25.8561, 89.3339]}, center: [25.7439, 89.2752] },
+                "Satkhira": { upazilas: {"Satkhira Sadar": [22.7185, 89.0705], "Shyamnagar": [22.3375, 89.1039]}, center: [22.7185, 89.0705] },
+                "Shariatpur": { upazilas: {"Shariatpur Sadar": [23.2423, 90.4348], "Naria": [23.3167, 90.4167]}, center: [23.2423, 90.4348] },
+                "Sherpur": { upazilas: {"Sherpur Sadar": [25.0205, 90.0153], "Nalitabari": [25.0881, 90.1831]}, center: [25.0205, 90.0153] },
+                "Sirajganj": { upazilas: {"Sirajganj Sadar": [24.4534, 89.7004], "Shahjadpur": [24.1669, 89.5922]}, center: [24.4534, 89.7004] },
+                "Sunamganj": { upazilas: {"Sunamganj Sadar": [25.0658, 91.3950], "Chhatak": [25.0389, 91.6781]}, center: [25.0658, 91.3950] },
+                "Sylhet": { upazilas: {"Sylhet Sadar": [24.8949, 91.8687], "Beanibazar": [24.8282, 92.1621], "Golapganj": [24.8573, 92.0205], "Zakiganj": [24.8750, 92.3750]}, center: [24.8949, 91.8687] },
+                "Tangail": { upazilas: {"Tangail Sadar": [24.2513, 89.9167], "Mirzapur": [24.0919, 90.1078]}, center: [24.2513, 89.9167] },
+                "Thakurgaon": { upazilas: {"Thakurgaon Sadar": [26.0337, 88.4697], "Ranisankail": [26.0167, 88.2167]}, center: [26.0337, 88.4697] }
+            };
 
             const bdBounds = L.latLngBounds([20.5, 88.0], [26.7, 92.7]);
 
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            } catch(e) {
-                statusDiv.innerText = 'DB এরর: ' + e.message;
-                return;
-            }
+            } catch(e) { statusDiv.innerText = 'DB এরর: ' + e.message; return; }
 
             try {
                 map = L.map('map', {
@@ -122,27 +129,52 @@
                 });
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                 markers = L.layerGroup().addTo(map);
-                statusDiv.innerText = 'ম্যাপ রেডি ✅ রিপোর্ট আনতেছি...';
+
+                // ৬৪ জেলা লোড
+                Object.keys(BD_DATA).sort().forEach(d => {
+                    districtSelect.innerHTML += `<option value="${d}">${d}</option>`;
+                });
+
+                statusDiv.innerText = 'ম্যাপ রেডি ✅ ৬৪ জেলা লোডেড';
                 loadReports();
-            } catch (e) {
-                statusDiv.innerText = 'ম্যাপ এরর: ' + e.message;
-                return;
+            } catch (e) { statusDiv.innerText = 'ম্যাপ এরর: ' + e.message; return; }
+
+            window.loadUpazilas = function() {
+                const district = districtSelect.value;
+                upazilaSelect.innerHTML = '<option value="all">সব উপজেলা</option>';
+                upazilaSelect.disabled = district === 'all';
+
+                if (district!== 'all' && BD_DATA[district]) {
+                    Object.keys(BD_DATA[district].upazilas).forEach(upazila => {
+                        upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
+                    });
+                    map.setView(BD_DATA[district].center, 10);
+                } else {
+                    map.setView([23.685, 90.3563], 7);
+                }
+                filterReports();
             }
 
-            // GPS থেকে জেলা বের করার ফাংশন
+            window.filterUpazila = function() {
+                const district = districtSelect.value;
+                const upazila = upazilaSelect.value;
+
+                if (district!== 'all' && upazila!== 'all' && BD_DATA[district]?.upazilas[upazila]) {
+                    const coords = BD_DATA[district].upazilas[upazila];
+                    map.setView(coords, 14);
+                }
+                filterReports();
+            }
+
             async function getDistrictFromCoords(lat, lng) {
                 try {
                     statusDiv.innerText = 'জেলা খুঁজতেছি...';
                     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=bn`);
                     const data = await response.json();
-                    // state = বিভাগ, county = জেলা
                     let district = data.address.county || data.address.state_district || data.address.city || 'Unknown';
-                    // "District" শব্দ বাদ দিব
                     district = district.replace(' District', '').replace(' জেলা', '');
                     return district;
-                } catch (e) {
-                    return 'Unknown';
-                }
+                } catch (e) { return 'Unknown'; }
             }
 
             window.reportLoadShedding = async function(status) {
@@ -150,28 +182,24 @@
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
-                    
+
                     if(!bdBounds.contains([lat, lng])) {
                         statusDiv.innerText = 'দুঃখিত, শুধু বাংলাদেশের জন্য';
                         return;
                     }
-                    
-                    // অটো জেলা বের করতেছি
+
                     const district = await getDistrictFromCoords(lat, lng);
                     statusDiv.innerText = `${district} জেলা পাইছি! DB তে পাঠাচ্ছি...`;
-                    
+
                     const { error } = await supabase.from('reports').insert([{
-                        status: status, 
-                        lat: lat, 
-                        lng: lng,
-                        district: district
+                        status: status, lat: lat, lng: lng, district: district
                     }]);
                     if(error) statusDiv.innerText = 'DB এরর: ' + error.message;
                     else { statusDiv.innerText = `${district} থেকে রিপোর্ট যোগ হয়েছে ✅`; loadReports(); }
-                }, (err) => { 
+                }, (err) => {
                     if(err.code == 1) statusDiv.innerText = 'লোকেশন ব্লক করা। 🔒 Allow দিন';
                     else if(err.code == 2) statusDiv.innerText = 'GPS পাচ্ছে না';
-                    else statusDiv.innerText = 'লোকেশন এরর: ' + err.message; 
+                    else statusDiv.innerText = 'লোকেশন এরর: ' + err.message;
                 }, {enableHighAccuracy: true, timeout: 15000});
             }
 
@@ -179,25 +207,31 @@
                 const { data, error } = await supabase.from('reports').select('*').gte('created_at', new Date(Date.now() - 60*60*1000).toISOString());
                 if(error) { statusDiv.innerText = 'DB Read এরর: ' + error.message; return; }
                 allReports = data;
-                filterDistrict();
+                filterReports();
             }
 
-            window.filterDistrict = function() {
-                const selected = districtSelect.value;
+            function filterReports() {
+                const district = districtSelect.value;
                 markers.clearLayers();
-                const filtered = selected === 'all' ? allReports : allReports.filter(r => r.district.toLowerCase().includes(selected.toLowerCase()));
-                
+
+                let filtered = allReports;
+                if (district!== 'all') {
+                    filtered = filtered.filter(r => r.district && r.district.toLowerCase().includes(district.toLowerCase()));
+                }
+
                 filtered.forEach(report => {
-                    const color = report.status === 'off' ? '#ef4444' : '#22c55e';
+                    const color = report.status === 'off'? '#ef4444' : '#22c55e';
                     L.circleMarker([report.lat, report.lng], {
                         radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8
-                    }).bindPopup(`<b>${report.district}</b><br>${report.status === 'off' ? 'কারেন্ট নাই' : 'কারেন্ট আছে'}`).addTo(markers);
+                    }).bindPopup(`<b>${report.district || 'Unknown'}</b><br>${report.status === 'off'? 'কারেন্ট নাই' : 'কারেন্ট আছে'}`).addTo(markers);
                 });
-                
-                const districtName = selected === 'all' ? 'সব জেলায়' : selected + ' জেলায়';
-                statusDiv.innerText = `${districtName} লাস্ট ১ ঘন্টায় ${filtered.length} টা রিপোর্ট`;
+
+                let locationText = district === 'all'? 'সব জেলায়' : district;
+                if (upazilaSelect.value!== 'all') locationText = upazilaSelect.value + ', ' + district;
+
+                statusDiv.innerText = `${locationText} - লাস্ট ১ ঘন্টায় ${filtered.length} টা রিপোর্ট`;
             }
-            
+
             setInterval(loadReports, 30000);
         });
     </script>
