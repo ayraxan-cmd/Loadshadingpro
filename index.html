@@ -36,7 +36,6 @@
             const statusDiv = document.getElementById('status');
             let supabase, map, markers;
 
-            // Step 1: Supabase চালু
             try {
                 if(!window.supabase) throw new Error('Supabase লাইব্রেরি লোড হয় নাই');
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -46,7 +45,6 @@
                 return;
             }
 
-            // Step 2: ম্যাপ চালু
             try {
                 if(!window.L) throw new Error('Leaflet লাইব্রেরি লোড হয় নাই');
                 map = L.map('map').setView([23.8103, 90.4125], 11);
@@ -60,14 +58,20 @@
             }
 
             window.reportLoadShedding = async function(status) {
-                statusDiv.innerText = 'লোকেশন নিচ্ছি...';
+                statusDiv.innerText = 'লোকেশন খুঁজতেছি... 15 সেকেন্ড লাগতে পারে';
                 navigator.geolocation.getCurrentPosition(async (pos) => {
+                    statusDiv.innerText = 'লোকেশন পাইছি! DB তে পাঠাচ্ছি...';
                     const { error } = await supabase.from('reports').insert([{
                         status: status, lat: pos.coords.latitude, lng: pos.coords.longitude,
                     }]);
                     if(error) statusDiv.innerText = 'DB এরর: ' + error.message;
                     else { statusDiv.innerText = 'রিপোর্ট যোগ হয়েছে ✅'; loadReports(); }
-                }, (err) => { statusDiv.innerText = 'লোকেশন পারমিশন দিন'; });
+                }, (err) => { 
+                    if(err.code == 1) statusDiv.innerText = 'লোকেশন ব্লক করা। 🔒 আইকনে Allow দিন';
+                    else if(err.code == 2) statusDiv.innerText = 'GPS পাচ্ছে না। বারান্দায় গিয়ে ট্রাই করুন';
+                    else if(err.code == 3) statusDiv.innerText = 'টাইম আউট। আবার চাপ দিন';
+                    else statusDiv.innerText = 'লোকেশন এরর: ' + err.message; 
+                }, {enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
             }
 
             async function loadReports() {
