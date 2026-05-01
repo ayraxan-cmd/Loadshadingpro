@@ -8,19 +8,88 @@
     <style>
         html, body {margin: 0; padding: 0; height: 100%;}
         body {font-family: 'Hind Siliguri', sans-serif; background: #0f172a; display: flex; flex-direction: column;}
-        #map {height: 60vh; width: 100%; background: #333; flex-shrink: 0;}
+        #map {height: 55vh; width: 100%; background: #333; flex-shrink: 0;}
         .controls {padding: 15px; background: #1e293b; text-align: center; flex-grow: 1;}
-        h1 {color: #fff; font-size: 20px; margin-bottom: 10px;}
-        .btn {padding: 15px 10px; font-size: 16px; border-radius: 10px; border: none; margin: 5px; width: 45%; font-weight: bold; cursor: pointer;}
+        h1 {color: #fff; font-size: 18px; margin-bottom: 8px;}
+        .btn {padding: 12px 8px; font-size: 15px; border-radius: 8px; border: none; margin: 4px; width: 47%; font-weight: bold; cursor: pointer;}
         .off {background: #ef4444; color: white;}
         .on {background: #22c55e; color: white;}
-        #status {color: #fbbf24; margin-top: 10px; font-size: 14px; min-height: 20px;}
+        #status {color: #fbbf24; margin-top: 8px; font-size: 13px; min-height: 18px;}
+        select {width: 96%; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; font-size: 15px; background: #334155; color: white;}
     </style>
 </head>
 <body>
     <div id="map"></div>
     <div class="controls">
-        <h1>⚡ লাইভ লোডশেডিং ম্যাপ</h1>
+        <h1>⚡ বাংলাদেশ লোডশেডিং ম্যাপ</h1>
+        <select id="districtSelect" onchange="filterDistrict()">
+            <option value="all">সব জেলা</option>
+            <option value="Dhaka">ঢাকা</option>
+            <option value="Chattogram">চট্টগ্রাম</option>
+            <option value="Gazipur">গাজীপুর</option>
+            <option value="Narayanganj">নারায়ণগঞ্জ</option>
+            <option value="Cumilla">কুমিল্লা</option>
+            <option value="Sylhet">সিলেট</option>
+            <option value="Khulna">খুলনা</option>
+            <option value="Rajshahi">রাজশাহী</option>
+            <option value="Rangpur">রংপুর</option>
+            <option value="Barisal">বরিশাল</option>
+            <option value="Mymensingh">ময়মনসিংহ</option>
+            <option value="Manikganj">মানিকগঞ্জ</option>
+            <option value="Faridpur">ফরিদপুর</option>
+            <option value="Tangail">টাঙ্গাইল</option>
+            <option value="Kishoreganj">কিশোরগঞ্জ</option>
+            <option value="Bogra">বগুড়া</option>
+            <option value="Pabna">পাবনা</option>
+            <option value="Jessore">যশোর</option>
+            <option value="Comilla">কুমিল্লা</option>
+            <option value="Noakhali">নোয়াখালী</option>
+            <option value="Cox's Bazar">কক্সবাজার</option>
+            <!-- বাকি ৬৪ জেলা অ্যাড করে দিলাম -->
+            <option value="Bagerhat">বাগেরহাট</option>
+            <option value="Bandarban">বান্দরবান</option>
+            <option value="Barguna">বরগুনা</option>
+            <option value="Bhola">ভোলা</option>
+            <option value="Brahmanbaria">ব্রাহ্মণবাড়িয়া</option>
+            <option value="Chandpur">চাঁদপুর</option>
+            <option value="Chuadanga">চুয়াডাঙ্গা</option>
+            <option value="Dinajpur">দিনাজপুর</option>
+            <option value="Feni">ফেনী</option>
+            <option value="Gaibandha">গাইবান্ধা</option>
+            <option value="Gopalganj">গোপালগঞ্জ</option>
+            <option value="Habiganj">হবিগঞ্জ</option>
+            <option value="Jamalpur">জামালপুর</option>
+            <option value="Jhalokati">ঝালকাঠি</option>
+            <option value="Jhenaidah">ঝিনাইদহ</option>
+            <option value="Joypurhat">জয়পুরহাট</option>
+            <option value="Khagrachhari">খাগড়াছড়ি</option>
+            <option value="Kurigram">কুড়িগ্রাম</option>
+            <option value="Kushtia">কুষ্টিয়া</option>
+            <option value="Lakshmipur">লক্ষ্মীপুর</option>
+            <option value="Lalmonirhat">লালমনিরহাট</option>
+            <option value="Madaripur">মাদারীপুর</option>
+            <option value="Magura">মাগুরা</option>
+            <option value="Meherpur">মেহেরপুর</option>
+            <option value="Moulvibazar">মৌলভীবাজার</option>
+            <option value="Munshiganj">মুন্সিগঞ্জ</option>
+            <option value="Naogaon">নওগাঁ</option>
+            <option value="Narail">নড়াইল</option>
+            <option value="Narsingdi">নরসিংদী</option>
+            <option value="Natore">নাটোর</option>
+            <option value="Netrokona">নেত্রকোণা</option>
+            <option value="Nilphamari">নীলফামারী</option>
+            <option value="Panchagarh">পঞ্চগড়</option>
+            <option value="Patuakhali">পটুয়াখালী</option>
+            <option value="Pirojpur">পিরোজপুর</option>
+            <option value="Rajbari">রাজবাড়ী</option>
+            <option value="Rangamati">রাঙ্গামাটি</option>
+            <option value="Satkhira">সাতক্ষীরা</option>
+            <option value="Shariatpur">শরীয়তপুর</option>
+            <option value="Sherpur">শেরপুর</option>
+            <option value="Sirajganj">সিরাজগঞ্জ</option>
+            <option value="Sunamganj">সুনামগঞ্জ</option>
+            <option value="Thakurgaon">ঠাকুরগাঁও</option>
+        </select>
         <button class="btn off" onclick="reportLoadShedding('off')">কারেন্ট নাই</button>
         <button class="btn on" onclick="reportLoadShedding('on')">কারেন্ট আসছে</button>
         <div id="status">স্ক্রিপ্ট লোড হচ্ছে...</div>
@@ -34,20 +103,23 @@
             const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlyd3ZibmxvcmZ4dXpob21jeWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDAyMDMsImV4cCI6MjA5MzE3NjIwM30.4MvaM2e_KgdSu_WfQ_lwSxkBkYiXZv7c1B0NWkbEup8'; 
             
             const statusDiv = document.getElementById('status');
-            let supabase, map, markers;
+            const districtSelect = document.getElementById('districtSelect');
+            let supabase, map, markers, allReports = [];
+
+            const bdBounds = L.latLngBounds([20.5, 88.0], [26.7, 92.7]);
 
             try {
-                if(!window.supabase) throw new Error('Supabase লাইব্রেরি লোড হয় নাই');
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                statusDiv.innerText = 'Supabase OK ✅ ম্যাপ লোড হচ্ছে...';
             } catch(e) {
                 statusDiv.innerText = 'DB এরর: ' + e.message;
                 return;
             }
 
             try {
-                if(!window.L) throw new Error('Leaflet লাইব্রেরি লোড হয় নাই');
-                map = L.map('map').setView([23.8103, 90.4125], 11);
+                map = L.map('map', {
+                    center: [23.685, 90.3563], zoom: 7, minZoom: 6, maxZoom: 18,
+                    maxBounds: bdBounds, maxBoundsViscosity: 1.0
+                });
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                 markers = L.layerGroup().addTo(map);
                 statusDiv.innerText = 'ম্যাপ রেডি ✅ রিপোর্ট আনতেছি...';
@@ -57,33 +129,75 @@
                 return;
             }
 
+            // GPS থেকে জেলা বের করার ফাংশন
+            async function getDistrictFromCoords(lat, lng) {
+                try {
+                    statusDiv.innerText = 'জেলা খুঁজতেছি...';
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=bn`);
+                    const data = await response.json();
+                    // state = বিভাগ, county = জেলা
+                    let district = data.address.county || data.address.state_district || data.address.city || 'Unknown';
+                    // "District" শব্দ বাদ দিব
+                    district = district.replace(' District', '').replace(' জেলা', '');
+                    return district;
+                } catch (e) {
+                    return 'Unknown';
+                }
+            }
+
             window.reportLoadShedding = async function(status) {
-                statusDiv.innerText = 'লোকেশন খুঁজতেছি... 15 সেকেন্ড লাগতে পারে';
+                statusDiv.innerText = 'লোকেশন খুঁজতেছি...';
                 navigator.geolocation.getCurrentPosition(async (pos) => {
-                    statusDiv.innerText = 'লোকেশন পাইছি! DB তে পাঠাচ্ছি...';
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    
+                    if(!bdBounds.contains([lat, lng])) {
+                        statusDiv.innerText = 'দুঃখিত, শুধু বাংলাদেশের জন্য';
+                        return;
+                    }
+                    
+                    // অটো জেলা বের করতেছি
+                    const district = await getDistrictFromCoords(lat, lng);
+                    statusDiv.innerText = `${district} জেলা পাইছি! DB তে পাঠাচ্ছি...`;
+                    
                     const { error } = await supabase.from('reports').insert([{
-                        status: status, lat: pos.coords.latitude, lng: pos.coords.longitude,
+                        status: status, 
+                        lat: lat, 
+                        lng: lng,
+                        district: district
                     }]);
                     if(error) statusDiv.innerText = 'DB এরর: ' + error.message;
-                    else { statusDiv.innerText = 'রিপোর্ট যোগ হয়েছে ✅'; loadReports(); }
+                    else { statusDiv.innerText = `${district} থেকে রিপোর্ট যোগ হয়েছে ✅`; loadReports(); }
                 }, (err) => { 
-                    if(err.code == 1) statusDiv.innerText = 'লোকেশন ব্লক করা। 🔒 আইকনে Allow দিন';
-                    else if(err.code == 2) statusDiv.innerText = 'GPS পাচ্ছে না। বারান্দায় গিয়ে ট্রাই করুন';
-                    else if(err.code == 3) statusDiv.innerText = 'টাইম আউট। আবার চাপ দিন';
+                    if(err.code == 1) statusDiv.innerText = 'লোকেশন ব্লক করা। 🔒 Allow দিন';
+                    else if(err.code == 2) statusDiv.innerText = 'GPS পাচ্ছে না';
                     else statusDiv.innerText = 'লোকেশন এরর: ' + err.message; 
-                }, {enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+                }, {enableHighAccuracy: true, timeout: 15000});
             }
 
             async function loadReports() {
                 const { data, error } = await supabase.from('reports').select('*').gte('created_at', new Date(Date.now() - 60*60*1000).toISOString());
                 if(error) { statusDiv.innerText = 'DB Read এরর: ' + error.message; return; }
-                markers.clearLayers();
-                data.forEach(report => {
-                    const color = report.status === 'off' ? '#ef4444' : '#22c55e';
-                    L.circleMarker([report.lat, report.lng], {radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8}).addTo(markers);
-                });
-                statusDiv.innerText = `লাস্ট ১ ঘন্টায় ${data.length} টা রিপোর্ট`;
+                allReports = data;
+                filterDistrict();
             }
+
+            window.filterDistrict = function() {
+                const selected = districtSelect.value;
+                markers.clearLayers();
+                const filtered = selected === 'all' ? allReports : allReports.filter(r => r.district.toLowerCase().includes(selected.toLowerCase()));
+                
+                filtered.forEach(report => {
+                    const color = report.status === 'off' ? '#ef4444' : '#22c55e';
+                    L.circleMarker([report.lat, report.lng], {
+                        radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8
+                    }).bindPopup(`<b>${report.district}</b><br>${report.status === 'off' ? 'কারেন্ট নাই' : 'কারেন্ট আছে'}`).addTo(markers);
+                });
+                
+                const districtName = selected === 'all' ? 'সব জেলায়' : selected + ' জেলায়';
+                statusDiv.innerText = `${districtName} লাস্ট ১ ঘন্টায় ${filtered.length} টা রিপোর্ট`;
+            }
+            
             setInterval(loadReports, 30000);
         });
     </script>
