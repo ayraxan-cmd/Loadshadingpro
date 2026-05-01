@@ -5,39 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বাংলাদেশ লোডশেডিং ম্যাপ - ৬৪ জেলা</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {box-sizing: border-box;}
         html, body {margin: 0; padding: 0; height: 100%;}
-        body {font-family: 'Hind Siliguri', sans-serif; background: #0f172a; display: flex; flex-direction: column;}
-        #map {height: 50vh; width: 100%; background: #333; flex-shrink: 0; cursor: crosshair;}
-  .controls {padding: 12px; background: #1e293b; text-align: center; flex-grow: 1; overflow-y: auto;}
-        h1 {color: #fff; font-size: 17px; margin-bottom: 6px;}
+        body {
+            font-family: 'Hind Siliguri', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex; 
+            flex-direction: column;
+        }
+        #map {
+            height: 55vh; 
+            width: 100%; 
+            background: #0f172a; 
+            flex-shrink: 0; 
+            cursor: crosshair;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* প্রিমিয়াম গ্লাসমরফিজম কন্ট্রোল */
+.controls {
+            padding: 16px; 
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center; 
+            flex-grow: 1; 
+            overflow-y: auto;
+        }
+        
+        h1 {
+            color: #fff; 
+            font-size: 18px; 
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
    
-   /* বাটন এনিমেশন CSS শুরু */
-  .btn {
-       padding: 12px 8px; 
-       font-size: 15px; 
-       border-radius: 8px; 
-       border: none; 
-       margin: 4px; 
-       width: 47%; 
-       font-weight: bold; 
+        /* প্রিমিয়াম বাটন */
+.btn {
+       padding: 14px 10px;
+       font-size: 15px;
+       border-radius: 12px;
+       border: none;
+       margin: 5px;
+       width: 47%;
+       font-weight: 600;
        cursor: pointer;
-       transition: all 0.3s ease;
+       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
        position: relative;
        overflow: hidden;
+       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+       letter-spacing: 0.3px;
    }
    
-  .btn:hover {
-       transform: translateY(-3px);
-       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+.btn:hover {
+       transform: translateY(-4px) scale(1.02);
+       box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
    }
    
-  .btn:active {
-       transform: translateY(0px) scale(0.96);
-       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+.btn:active {
+       transform: translateY(-1px) scale(0.98);
+       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
    }
    
-  .btn::after {
+.btn::before {
+       content: "";
+       position: absolute;
+       top: 0;
+       left: -100%;
+       width: 100%;
+       height: 100%;
+       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+       transition: left 0.5s;
+   }
+   
+.btn:hover::before {
+       left: 100%;
+   }
+   
+.btn::after {
        content: "";
        position: absolute;
        top: 50%;
@@ -45,61 +94,128 @@
        width: 0;
        height: 0;
        border-radius: 50%;
-       background: rgba(255, 255, 255, 0.3);
+       background: rgba(255, 255, 255, 0.4);
        transform: translate(-50%, -50%);
        transition: width 0.6s, height 0.6s;
    }
    
-  .btn:active::after {
+.btn:active::after {
        width: 300px;
        height: 300px;
    }
    
-  .off {
-       background: #ef4444; 
+.off {
+       background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
        color: white;
        animation: pulse-red 2s infinite;
    }
    
    @keyframes pulse-red {
-       0% { box-shadow: 0 0 rgba(239, 68, 68, 0.7); }
-       70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-       100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+       0%, 100% { box-shadow: 0 4px 15px rgba(239, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7); }
+       50% { box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4), 0 0 0 12px rgba(239, 68, 68, 0); }
    }
    
-  .on {
-       background: #22c55e; 
+.on {
+       background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
        color: white;
    }
    
-  .on:hover {
-       background: #16a34a;
+.on:hover {
+       background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
    }
    
-  .manual {
-       background: #3b82f6; 
-       color: white; 
-       width: 96%; 
+.manual {
+       background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+       color: white;
+       width: 96%;
        margin-top: 8px;
    }
    
-  .manual.active {
-       background: #f59e0b;
+.manual.active {
+       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
        animation: pulse-orange 1.5s infinite;
    }
    
    @keyframes pulse-orange {
-       0% { box-shadow: 0 0 rgba(245, 158, 11, 0.7); }
-       70% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
-       100% { box-shadow: 0 0 rgba(245, 158, 11, 0); }
+       0%, 100% { box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4), 0 0 0 0 rgba(245, 158, 11, 0.7); }
+       50% { box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4), 0 0 0 10px rgba(245, 158, 11, 0); }
    }
-   /* বাটন এনিমেশন CSS শেষ */
    
-        #status {color: #fbbf24; margin-top: 6px; font-size: 12px; min-height: 16px;}
-        select {width: 96%; padding: 9px; margin: 4px 0; border-radius: 8px; border: none; font-size: 14px; background: #334155; color: white;}
-  .filter-group {display: flex; gap: 4px; width: 96%; margin: 0 auto;}
-  .filter-group select {width: 50%;}
-  .info-box {background: #334155; color: #cbd5e1; padding: 8px; border-radius: 8px; margin: 8px auto; width: 96%; font-size: 12px;}
+        #status {
+            color: #fbbf24; 
+            margin-top: 8px; 
+            font-size: 13px; 
+            min-height: 18px;
+            font-weight: 500;
+        }
+        
+        /* অ্যানিমেটেড ডটস */
+        #status.loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        select {
+            width: 96%; 
+            padding: 11px 12px; 
+            margin: 5px 0; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px; 
+            background: rgba(51, 65, 85, 0.8);
+            backdrop-filter: blur(8px);
+            color: white;
+            font-family: 'Hind Siliguri', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        select:hover {
+            background: rgba(51, 65, 85, 1);
+            border-color: rgba(255,255,255,0.2);
+        }
+        
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        
+.filter-group {
+            display: flex; 
+            gap: 6px; 
+            width: 96%; 
+            margin: 0 auto 8px auto;
+        }
+.filter-group select {width: 50%; margin: 0;}
+.info-box {
+            background: rgba(51, 65, 85, 0.6);
+            backdrop-filter: blur(8px);
+            color: #cbd5e1; 
+            padding: 10px; 
+            border-radius: 10px; 
+            margin: 10px auto; 
+            width: 96%; 
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Leaflet কন্ট্রোল প্রিমিয়াম করা */
+        .leaflet-control-zoom a {
+            background: rgba(30, 41, 59, 0.9) !important;
+            color: white !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            backdrop-filter: blur(8px);
+        }
+        
+        .leaflet-control-zoom a:hover {
+            background: rgba(51, 65, 85, 1) !important;
+        }
     </style>
 </head>
 <body>
@@ -217,7 +333,6 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                 markers = L.layerGroup().addTo(map);
 
-                // ম্যাপ ক্লিক ইভেন্ট - ম্যানুয়াল লোকেশন সিলেক্ট
                 map.on('click', function(e) {
                     if (manualMode) {
                         selectedLatLng = e.latlng;
@@ -252,7 +367,7 @@
                 }
             }
 
-            window.loadUpazilas = function() {
+                        window.loadUpazilas = function() {
                 const district = districtSelect.value;
                 upazilaSelect.innerHTML = '<option value="all">সব উপজেলা</option>';
                 upazilaSelect.disabled = district === 'all';
@@ -334,10 +449,13 @@
                 }
 
                 statusDiv.innerText = `${upazila}, ${district} থেকে রিপোর্ট সেভ হচ্ছে...`;
+                statusDiv.classList.add('loading');
 
                 const { error } = await supabase.from('reports').insert([{
                     status: status, lat: lat, lng: lng, district: district, upazila: upazila
                 }]);
+
+                statusDiv.classList.remove('loading');
 
                 if(error) {
                     statusDiv.innerText = 'DB এরর: ' + error.message;
@@ -355,14 +473,15 @@
 
             window.reportLoadShedding = async function(status) {
                 if (manualMode && selectedLatLng) {
-                    // ম্যানুয়াল মোডে ম্যাপে ক্লিক করা লোকেশন
                     await saveReport(status, selectedLatLng.lat, selectedLatLng.lng);
                 } else {
-                    // GPS দিয়ে অটো লোকেশন
-                    statusDiv.innerText = 'লোকেশন খুঁজতেছি...';
+                    statusDiv.innerText = 'লোকেশন খুঁজতেছি';
+                    statusDiv.classList.add('loading');
                     navigator.geolocation.getCurrentPosition(async (pos) => {
+                        statusDiv.classList.remove('loading');
                         await saveReport(status, pos.coords.latitude, pos.coords.longitude);
                     }, (err) => {
+                        statusDiv.classList.remove('loading');
                         if(err.code == 1) statusDiv.innerText = 'লোকেশন ব্লক। ম্যানুয়াল মোড ইউজ করো ⬇️';
                         else if(err.code == 2) statusDiv.innerText = 'GPS পাচ্ছে না। ম্যানুয়াল মোড ইউজ করো ⬇️';
                         else statusDiv.innerText = 'লোকেশন এরর। ম্যানুয়াল মোড ইউজ করো ⬇️';
