@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বাংলাদেশ লোডশেডিং ম্যাপ</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         html, body {margin: 0; padding: 0; height: 100%;}
         body {font-family: 'Hind Siliguri', sans-serif; background: #0f172a; display: flex; flex-direction: column;}
@@ -25,55 +23,65 @@
         <h1>⚡ লাইভ লোডশেডিং ম্যাপ</h1>
         <button class="btn off" onclick="reportLoadShedding('off')">কারেন্ট নাই</button>
         <button class="btn on" onclick="reportLoadShedding('on')">কারেন্ট আসছে</button>
-        <div id="status">শুরু হচ্ছে...</div>
+        <div id="status">স্ক্রিপ্ট লোড হচ্ছে...</div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://irwvbnlorfxuzhomcyew.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlyd3ZibmxvcmZ4dXpob21jeWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDAyMDMsImV4cCI6MjA5MzE3NjIwM30.4MvaM2e_KgdSu_WfQ_lwSxkBkYiXZv7c1B0NWkbEup8'; 
-        
-        const statusDiv = document.getElementById('status');
-        let supabase, map, markers;
+        document.addEventListener('DOMContentLoaded', function() {
+            const SUPABASE_URL = 'https://irwvbnlorfxuzhomcyew.supabase.co'; 
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlyd3ZibmxvcmZ4dXpob21jeWV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDAyMDMsImV4cCI6MjA5MzE3NjIwM30.4MvaM2e_KgdSu_WfQ_lwSxkBkYiXZv7c1B0NWkbEup8'; 
+            
+            const statusDiv = document.getElementById('status');
+            let supabase, map, markers;
 
-        try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            statusDiv.innerText = 'Supabase কানেক্টেড ✅';
-        } catch(e) {
-            statusDiv.innerText = 'Key এরর: ' + e.message;
-        }
+            // Step 1: Supabase চালু
+            try {
+                if(!window.supabase) throw new Error('Supabase লাইব্রেরি লোড হয় নাই');
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                statusDiv.innerText = 'Supabase OK ✅ ম্যাপ লোড হচ্ছে...';
+            } catch(e) {
+                statusDiv.innerText = 'DB এরর: ' + e.message;
+                return;
+            }
 
-        try {
-            map = L.map('map').setView([23.8103, 90.4125], 11);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            markers = L.layerGroup().addTo(map);
-            statusDiv.innerText = 'ম্যাপ + DB রেডি ✅';
-            loadReports();
-        } catch (e) {
-            statusDiv.innerText = 'ম্যাপ এরর: ' + e.message;
-        }
+            // Step 2: ম্যাপ চালু
+            try {
+                if(!window.L) throw new Error('Leaflet লাইব্রেরি লোড হয় নাই');
+                map = L.map('map').setView([23.8103, 90.4125], 11);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                markers = L.layerGroup().addTo(map);
+                statusDiv.innerText = 'ম্যাপ রেডি ✅ রিপোর্ট আনতেছি...';
+                loadReports();
+            } catch (e) {
+                statusDiv.innerText = 'ম্যাপ এরর: ' + e.message;
+                return;
+            }
 
-        async function reportLoadShedding(status) {
-            statusDiv.innerText = 'লোকেশন নিচ্ছি...';
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const { error } = await supabase.from('reports').insert([{
-                    status: status, lat: pos.coords.latitude, lng: pos.coords.longitude,
-                }]);
-                if(error) statusDiv.innerText = 'DB এরর: ' + error.message;
-                else { statusDiv.innerText = 'রিপোর্ট যোগ হয়েছে ✅'; loadReports(); }
-            }, (err) => { statusDiv.innerText = 'লোকেশন পারমিশন লাগবে'; });
-        }
+            window.reportLoadShedding = async function(status) {
+                statusDiv.innerText = 'লোকেশন নিচ্ছি...';
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const { error } = await supabase.from('reports').insert([{
+                        status: status, lat: pos.coords.latitude, lng: pos.coords.longitude,
+                    }]);
+                    if(error) statusDiv.innerText = 'DB এরর: ' + error.message;
+                    else { statusDiv.innerText = 'রিপোর্ট যোগ হয়েছে ✅'; loadReports(); }
+                }, (err) => { statusDiv.innerText = 'লোকেশন পারমিশন দিন'; });
+            }
 
-        async function loadReports() {
-            const { data, error } = await supabase.from('reports').select('*').gte('created_at', new Date(Date.now() - 60*60*1000).toISOString());
-            if(error) { statusDiv.innerText = 'DB Read এরর: ' + error.message; return; }
-            markers.clearLayers();
-            data.forEach(report => {
-                const color = report.status === 'off' ? '#ef4444' : '#22c55e';
-                L.circleMarker([report.lat, report.lng], {radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8}).addTo(markers);
-            });
-            statusDiv.innerText = `লাস্ট ১ ঘন্টায় ${data.length} টা রিপোর্ট`;
-        }
-        setInterval(loadReports, 30000);
+            async function loadReports() {
+                const { data, error } = await supabase.from('reports').select('*').gte('created_at', new Date(Date.now() - 60*60*1000).toISOString());
+                if(error) { statusDiv.innerText = 'DB Read এরর: ' + error.message; return; }
+                markers.clearLayers();
+                data.forEach(report => {
+                    const color = report.status === 'off' ? '#ef4444' : '#22c55e';
+                    L.circleMarker([report.lat, report.lng], {radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8}).addTo(markers);
+                });
+                statusDiv.innerText = `লাস্ট ১ ঘন্টায় ${data.length} টা রিপোর্ট`;
+            }
+            setInterval(loadReports, 30000);
+        });
     </script>
 </body>
 </html>
